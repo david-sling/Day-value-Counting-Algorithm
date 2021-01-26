@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    
+    <form action="submit" >
+        <textarea name="input" cols="30" rows="10"></textarea>
+        <button type="button" >submit</button>
+    </form>
+    <div class="output">
+        <h2>Output</h2>
+        <p></p>
+        
+    </div>
+    <script>
+
+        const input = document.querySelector('textarea')
+        const button = document.querySelector('button')
+        const output = document.querySelector('p')
+
+        var inputD = {}
+
+        
+
+        const handleSubmit = () => {
+            
+            inputD =  JSON.parse(input.value) 
+            console.log(inputD)
+
+            var outputD = {
+                'Mon': 0,
+                'Tue': 0,
+                'Wed': 0,
+                'Thu': 0,
+                'Fri': 0,
+                'Sat': 0,
+                'Sun': 0,
+            }
+
+            const days = ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+            const getDay = date => {
+                dateArray = date.split('-')
+                
+                var year = dateArray[0]
+                const month = dateArray[1]
+                const day = dateArray[2]
+
+                year = parseInt(month)<3? (parseInt(year)-1).toString() : year
+
+                //implementing Zeller's rule to find day
+                const k = parseInt(day) //Day of the month
+                const m = parseInt(month)>2? parseInt(month)-2:parseInt(month)+10  //March->1 | April->2 | .... | January->11 | February->12 |
+                const D = parseInt(year.slice(2,4)) //Last two digits of the year
+                const C = parseInt(year.slice(0,2)) //First two digits of the year
+
+
+                var F=k+(Math.floor(13*m-1)/5)+D+Math.floor(D/4)+Math.floor(C/4)-2*C  //Zeller's formula
+                F=Math.floor(F)
+                // F=F/7
+                var R = F>0? F%7 : F%7+7
+                R = R%7
+                
+
+                return days[R]
+
+            }
+
+
+            var inputKeyArray = Object.keys(inputD)
+            // console.log(keyArray)
+            inputKeyArray.forEach( key => {
+                var day = getDay(key)
+                outputD[day] += inputD[key]
+            } )
+
+            outputKeyArray=Object.keys(outputD)
+            for(var i=0; i<7; i++){
+                var prev = i==0? 6 : i-1
+                var next = i==6? 0 : i+1
+
+                if (outputD[prev]==0) prev = prev==0? 6 : prev-1
+                if (outputD[next]==0) next = next==0? 6 : next-1
+
+
+                if (outputD[days[i]]==0) {
+                    dayZero = days[i]
+                    dayprev = days[prev]
+                    daynext = days[next]
+                    outputD[dayZero] = (outputD[dayprev]+outputD[daynext])/2
+                }
+            }
+
+            console.log('input:', inputD)
+            console.log('output:', outputD)
+            output.innerHTML=JSON.stringify(outputD)
+        }
+
+        button.addEventListener('click',handleSubmit)
+        
+
+        
+    </script>
+
+    
+
+</body>
+</html>

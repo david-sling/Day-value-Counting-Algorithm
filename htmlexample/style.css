@@ -1,0 +1,14 @@
+body,form, .output{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: sans-serif;
+}
+
+button{
+    width: 100%;
+    background-color: aqua;
+    padding: 10px;
+    border: none;
+    margin: 10px;
+}
